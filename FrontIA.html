@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETEC, Aprendizaje efectivo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {  /* Configuración CSS del cuerpo de la web */
+           
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #000000;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+ 
+        header {
+            background-color: #003366;   /* Configuración CSS para modificar el color */
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+ 
+        header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 28px;
+            font-weight: normal;
+        }
+        header h1 strong {
+            font-size: 36px;
+            font-weight: bold;
+        }
+ 
+        .hamburger {  /* Configuración CSS del menú de hamburguesa */
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .hamburger div {  
+            width: 25px;
+            height: 3px;
+            background-color: #ffffff;
+            border-radius: 5px;
+        }
+ 
+        .menu-sidebar { /* Configuración CSS del menú izquierdo */
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background-color: #f9f9f9;
+            border-left: 1px solid #ddd;
+            box-shadow: -4px 0 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .menu-sidebar.active {
+            display: block;
+        }
+ 
+        .menu-sidebar .close-btn {  /* Configuración CSS para el cierre del sidebar*/
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            font-size: 18px;
+            color: #007BFF;
+        }
+        .menu-sidebar .close-btn:hover {
+            color: #0056b3;
+        }
+ 
+        .menu-sidebar .menu-option {
+            width: 80px;
+            height: 80px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #003366;
+            color: #ffffff;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .menu-sidebar .menu-option:hover {
+            background-color: #002244;
+            transform: scale(1.1);
+        }
+ 
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+ 
+        .sidebar {
+            width: 20%;
+            background-color: #f9f9f9;
+            border-right: 1px solid #1c1c1c;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1); /* Agrega sombreado al lateral izquierdo */
+        }
+ 
+        .sidebar h2 {
+            color: #000000;
+        }
+ 
+        .sidebar a {
+            color: #003366;
+            text-decoration: none;
+        }
+ 
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+ 
+        .main-content h2 {
+            color: #003366;
+        }
+ 
+        .video-section {
+            display: none;
+            padding: 20px;
+        }
+ 
+        .video-section.active {
+            display: block;
+        }
+ 
+        .video {
+            width: 100%;
+            height: 150px;
+            background-color: #ddd;
+            margin-bottom: 10px;
+        }
+ 
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 20px;
+        }
+ 
+        .module {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .module:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+        }
+ 
+        .module h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+            color: #003366;
+        }
+        .module p {
+            margin: 5px 0;
+            color: #000000;
+        }
+ 
+        .back-button {   /* Configuración CSS del botón de retorno */
+            display: inline-block;
+            padding: 10px;
+            background-color: #003366;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #002244;
+        }
+ 
+        .chart-container {
+            margin-top: 20px;
+            width: 100%;
+            height: 300px;
+        }
+ 
+        .chat-button {     /* Configuración CSS del botón de chatGPT */
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #003366;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .chat-button:hover {
+            background-color: #002244;
+        }
+    </style>
+    <script>
+        function toggleMenu() {
+            const menuSidebar = document.querySelector('.menu-sidebar');
+            menuSidebar.classList.toggle('active');
+        }
+ 
+        function openPythonModules() {
+            const mainContent = document.querySelector('.main-content');
+            mainContent.innerHTML =
+                '<a href="javascript:void(0);" class="back-button" onclick="goBack()">← Regresar</a>' +
+                '<h2>Python Developer - Módulos</h2>' +
+                '<div class="module-grid">' +
+                    '<div class="module"><h3>Módulo 1</h3><p>Avance: 50%</p></div>' +
+                    '<div class="module"><h3>Módulo 2</h3><p>Avance: 30%</p></div>' +
+                    '<div class="module"><h3>Módulo 3</h3><p>Avance: 10%</p></div>' +
+                '</div>' +
+                '<div class="chart-container">' +
+                    '<canvas id="progressChart"></canvas>' +
+                '</div>';
+           
+            renderChart();
+        }
+ 
+        function goBack() {
+            const mainContent = document.querySelector('.main-content');
+            mainContent.innerHTML =
+                '<h2>Bienvenido</h2>' +
+                '<p>Selecciona un curso del menú para ver su información y materiales disponibles.</p>';
+            document.querySelector('.video-section').classList.remove('active');
+        }
+ 
+        function showVideos() {
+            const videoSection = document.querySelector('.video-section');
+            videoSection.classList.add('active');
+        }
+ 
+        function renderChart() {
+            var ctx = document.getElementById('progressChart').getContext('2d');
+            var progressChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Módulo 1', 'Módulo 2', 'Módulo 3'],
+                    datasets: [{
+                        label: 'Avance (%)',
+                        data: [50, 30, 10],
+                        backgroundColor: 'rgba(0, 123, 255, 0.6)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+    </script>    <!-- AQUI COMIENZA LA CONFIGURACIÓN DE HTML-->>
+</head>
+<body>
+   
+    <header>
+        <h1><strong>NETEC</strong> Aprendizaje efectivo</h1>
+        <div class="hamburger" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </header>
+ 
+    <div class="menu-sidebar">
+        <div class="close-btn" onclick="toggleMenu()">← Regresar</div>
+        <a href="javascript:void(0);" class="menu-option" onclick="showVideos()">Videos</a>
+        <a href="javascript:void(0);" class="menu-option" onclick="openPythonModules()">Juegos</a>
+        <a href="javascript:void(0);" class="menu-option" onclick="renderChart()">Material</a>
+    </div>
+ 
+    <div class="container">
+        <div class="sidebar">
+            <h2>Cursos</h2>
+            <ul>
+                <li><a href="javascript:void(0)" onclick="openPythonModules()">Python Developer</a></li>
+                <li><a href="#curso2">IA-900</a></li>
+                <li><a href="#curso3">AZ-900</a></li>
+                <li><a href="#curso4">AWS Practicioner</a></li>
+                <li><a href="#curso5">AWS Architect</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h2>Bienvenido</h2>
+            <p>Selecciona un curso del menú para ver su información y materiales disponibles.</p>
+        </div>
+    </div>
+ 
+    <div class="video-section">
+        <a href="javascript:void(0);" class="back-button" onclick="goBack()">← Regresar</a>
+        <h2>Videos Disponibles</h2>
+        <div class="video"></div>
+        <div class="video"></div>
+        <div class="video"></div>
+        <div class="video"></div>
+        <div class="video"></div>
+    </div>
+ 
+    <button class="chat-button" onclick="window.location.href='https://chatgpt.com/g/g-679917a8314481918bee9c4eb517f921-pyt-ess-basado-en-bigseo'">
+        <i class="fas fa-robot"></i>
+    </button>
+</body>
+</html>
